@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Download Codex v783 connections
         run: curl --fail --location --retry 8 --retry-all-errors -o /tmp/connections.csv.gz 'https://storage.googleapis.com/flywire-data/codex/data/fafb/783/connections.csv.gz'
       - name: Reconstruct the V230 pair selection rule
