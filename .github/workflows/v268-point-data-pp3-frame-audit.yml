@@ -1,0 +1,58 @@
+name: V268 Historical Point_data + PP3 Frame Audit
+
+on:
+  push:
+    branches: [v268-point-data-provenance-repair]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Install audit dependencies
+        run: python -m pip install --disable-pip-version-check numpy pandas "jax>=0.4.0" "jaxlib>=0.4.0"
+
+      - name: Download exact historical Point_data.pkl
+        env:
+          POINT_URL: https://raw.githubusercontent.com/borstlab/T4_T5_Dendrite_Morphology_Paper/56901ad1853b44aeca15504cd908fa4c31009a3e/Data/Point_data.pkl
+          EXPECTED_BLOB: b85caf49f45677f2075f7b5f2c8830141cd96d02
+          EXPECTED_SHA256: 76b7d6a1c44ad6b2ca730feff88174c71327e095cce45d8a47a0d998f77df58f
+        run: |
+          curl -L --fail --retry 5 --retry-delay 2 --connect-timeout 30 \
+            "$POINT_URL" -o /tmp/Point_data.pkl
+          test -s /tmp/Point_data.pkl
+
+          ACTUAL_BLOB="$(git hash-object -t blob /tmp/Point_data.pkl)"
+          ACTUAL_SHA256="$(sha256sum /tmp/Point_data.pkl | cut -d ' ' -f 1)"
+
+          printf '%s\n' \
+            "Point_data URL=$POINT_URL" \
+            "Observed git-blob=$ACTUAL_BLOB" \
+            "Observed sha256=$ACTUAL_SHA256" \
+            "Expected git-blob=$EXPECTED_BLOB" \
+            "Expected sha256=$EXPECTED_SHA256" \
+            > /tmp/V268_Point_data_hash_report.txt
+
+          test "$ACTUAL_BLOB" = "$EXPECTED_BLOB"
+          test "$ACTUAL_SHA256" = "$EXPECTED_SHA256"
+
+      - name: Reconstruct PP3 and audit coordinates
+        run: python scripts/v268_historical_point_data_provenance.py
+
+      - name: Upload V268 audit artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: V268-historical-point-data-pp3-frame-audit
+          path: |
+            v268_results/V268_historical_point_data_pp3_frame_audit.json
+            /tmp/V268_Point_data_hash_report.txt

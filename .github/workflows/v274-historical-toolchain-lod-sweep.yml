@@ -1,0 +1,26 @@
+name: V274 historical toolchain LOD sweep
+
+on:
+  pull_request:
+    paths:
+      - "scripts/v274_historical_toolchain_lod_sweep.py"
+      - ".github/workflows/v274-historical-toolchain-lod-sweep.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install likely 2025 toolchain
+        run: python -m pip install --upgrade pip "fafbseg==3.2.0" "navis==1.10.0" "skeletor==1.4.0" "jax>=0.4.0" "jaxlib>=0.4.0"
+      - name: Sweep exact FAFB materialization 783 at all mesh LODs
+        run: python scripts/v274_historical_toolchain_lod_sweep.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: V274-historical-toolchain-lod-sweep
+          path: v274_results/

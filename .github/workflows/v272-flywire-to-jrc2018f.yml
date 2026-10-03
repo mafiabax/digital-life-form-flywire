@@ -1,0 +1,32 @@
+name: V272 FLYWIRE to JRC2018F frame hypothesis audit
+
+on:
+  pull_request:
+    paths:
+      - "scripts/v272_flywire_to_jrc2018f.py"
+      - ".github/workflows/v272-flywire-to-jrc2018f.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install CMTK
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y cmtk
+      - name: Install transform toolchain
+        run: python -m pip install --upgrade pip "navis==1.12.0" "flybrains" "numpy>=1.24" "pandas>=2.0"
+      - name: Reproduce FLYWIRE to JRC2018F transform
+        env:
+          FLYBRAINS_DATA: ${{ github.workspace }}/flybrain-data
+        run: python scripts/v272_flywire_to_jrc2018f.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: V272-flywire-to-jrc2018f
+          path: v272_results/

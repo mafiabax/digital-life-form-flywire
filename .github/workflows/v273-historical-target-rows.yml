@@ -1,0 +1,20 @@
+name: V273 historical Point_data target metric extraction
+on:
+  pull_request:
+    paths:
+      - "scripts/v273_historical_target_rows.py"
+      - ".github/workflows/v273-historical-target-rows.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip install --upgrade pip "pandas>=2.0" "numpy>=1.24" "jax>=0.4.0" "jaxlib>=0.4.0"
+      - run: python scripts/v273_historical_target_rows.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: V273-historical-target-rows
+          path: v273_results/

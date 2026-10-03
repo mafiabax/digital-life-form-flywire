@@ -1,0 +1,21 @@
+name: V274 historical FAFB 630 mesh to PP3 audit
+on:
+  pull_request:
+    paths:
+      - "scripts/v274_flat630_pp3_audit.py"
+      - ".github/workflows/v274-flat630-pp3-audit.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip install --upgrade pip "fafbseg==3.2.2" "navis==1.12.0" "jax>=0.4.0" "jaxlib>=0.4.0" "pandas>=2.0" "numpy>=1.24"
+      - run: python scripts/v274_flat630_pp3_audit.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: V274-flat630-pp3-audit
+          path: v274_results/

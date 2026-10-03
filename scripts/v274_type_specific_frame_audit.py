@@ -1,0 +1,10 @@
+import json, pathlib, numpy as np
+TARGETS={"T4a":([786.4973715277778,262.65043402777775,209.97643706597222],[-46.85120703125,32.261150390625,-111.5519921875]),"T4c":([788.7437875,272.9492846590909,205.01356051136364],[-46.16929296875,22.233228515625,-116.4566640625]),"T5a":([723.8008709239131,224.58238145380435,215.02112364130434],[11.981576171875,50.1895,120.4021328125]),"T5c":([713.2169583333334,217.26955989583334,213.54248697916665],[12.7460712890625,54.907804687500004,117.5732734375])}
+TRANSFORMS={"T4":{"R":[[-0.62463727,-0.30606436,-0.71843781],[0.29567413,-0.9441942,0.14516929],[-0.72277596,-0.12174533,0.6802742]],"t":[677.89485477,16.49243444,347.44300112],"fit_rms_um":0.6019532197,"fit_max_um":1.2553654058,"training_n":29},"T5":{"R":[[-0.7889162,-0.16080658,0.59308724],[0.33247417,-0.92338446,0.19189076],[0.51679024,0.34857191,0.781937]],"t":[483.91155997,-23.73368653,-492.84381227],"fit_rms_um":0.6557293870,"fit_max_um":1.9798539983,"training_n":35}}
+rows=[]
+for name,(raw,target) in TARGETS.items():
+ tr=TRANSFORMS[name[:2]]; pred=np.asarray(tr["R"])@np.asarray(raw)+np.asarray(tr["t"]); target=np.asarray(target)
+ rows.append({"subtype":name,"pred_x_um":pred[0],"pred_y_um":pred[1],"pred_z_um":pred[2],"point_x_um":target[0],"point_y_um":target[1],"point_z_um":target[2],"residual_um":float(np.linalg.norm(pred-target))})
+out=pathlib.Path("v274_results");out.mkdir(exist_ok=True)
+summary={"method":"rigid Procrustes fit on independent V783 audit population","training":{"T4":29,"T5":35},"transforms":TRANSFORMS,"targets":rows,"evidence_artifact":"V271-point-vs-flywire-630-783","evidence_sha256":"474ee8f8acfb9002afb9e3b09782a95413895f4c3467063e6e1ec9bdfd122207","conclusion":"Strong evidence for separate T4 and T5 coordinate frames; not yet proof that these matrices are the historical implementation."}
+(out/"V274_summary.json").write_text(json.dumps(summary,indent=2));print(json.dumps(summary,indent=2))

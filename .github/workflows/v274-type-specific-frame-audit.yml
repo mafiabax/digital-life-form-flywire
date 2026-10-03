@@ -1,0 +1,20 @@
+name: V274 type-specific Point_data frame forensic audit
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/v274_type_specific_frame_audit.py"
+      - ".github/workflows/v274-type-specific-frame-audit.yml"
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip install --upgrade pip "numpy>=1.24"
+      - run: python scripts/v274_type_specific_frame_audit.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: V274-type-specific-frame-audit
+          path: v274_results/

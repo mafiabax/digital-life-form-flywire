@@ -1,0 +1,21 @@
+name: V277 exact Point_data candidate matching on FAFB 630
+on:
+  pull_request:
+    paths:
+      - "scripts/v277_pointdata_candidate_match.py"
+      - ".github/workflows/v277-pointdata-candidate-match.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip install --upgrade pip "fafbseg==3.2.2" "navis==1.12.0" "pandas>=2.0" "numpy>=1.24" "jax>=0.4.0" "jaxlib>=0.4.0"
+      - run: python scripts/v277_pointdata_candidate_match.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: V277-pointdata-candidate-match
+          path: v277_results/

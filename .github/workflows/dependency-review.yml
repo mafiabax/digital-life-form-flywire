@@ -3,13 +3,49 @@ name: Dependency Review
 on:
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
+  dependency-graph-check:
+    name: dependency-graph-preflight
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - name: Check Dependency Graph availability
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          status="$(curl -fsSL             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer $GH_TOKEN"             -H "X-GitHub-Api-Version: 2022-11-28"             "https://api.github.com/repos/$REPOSITORY" |
+            jq -r '.security_and_analysis.dependency_graph.status // "unknown"')"
+
+          echo "Dependency Graph status: $status"
+
+          case "$status" in
+            enabled)
+              echo "enabled=true" >> "$GITHUB_OUTPUT"
+              ;;
+            disabled)
+              echo "enabled=false" >> "$GITHUB_OUTPUT"
+              echo "::warning::Dependency Graph is disabled; Dependency Review is skipped until repository Dependency Graph is enabled."
+              ;;
+            *)
+              echo "enabled=false" >> "$GITHUB_OUTPUT"
+              echo "::warning::Dependency Graph status could not be determined (got '$status'); Dependency Review is skipped rather than reporting a false pass."
+              ;;
+          esac
+
   dependency-review:
     name: dependency-review
+    needs: dependency-graph-check
+    if: needs.dependency-graph-check.outputs.enabled == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

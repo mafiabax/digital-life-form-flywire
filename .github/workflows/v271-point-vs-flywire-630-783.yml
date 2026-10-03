@@ -1,0 +1,26 @@
+name: V271 Point_data roots vs FlyWire 630 and 783 snapshots
+on:
+  pull_request:
+    paths:
+      - "scripts/v271_point_vs_flywire_630_783.py"
+      - ".github/workflows/v271-point-vs-flywire-630-783.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install
+        run: python -m pip install --upgrade pip "pandas>=2.0" "numpy>=1.24" "navis>=1.10" "jax>=0.4.0" "jaxlib>=0.4.0"
+      - name: Compare
+        env:
+          V271_MAX_N: "64"
+          V271_THREADS: "12"
+        run: python scripts/v271_point_vs_flywire_630_783.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: V271-point-vs-flywire-630-783
+          path: v271_results/

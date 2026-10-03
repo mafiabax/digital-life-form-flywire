@@ -1,0 +1,26 @@
+name: V271 exact mesh to skeleton root reconstruction
+
+on:
+  pull_request:
+    paths:
+      - "scripts/v271_exact_mesh_to_skeleton.py"
+      - ".github/workflows/v271-exact-mesh-to-skeleton.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned morphology toolchain
+        run: python -m pip install --upgrade pip "fafbseg==3.2.2" "navis==1.12.0" "jax>=0.4.0" "jaxlib>=0.4.0"
+      - name: Reconstruct four historical mesh skeleton roots
+        run: python scripts/v271_exact_mesh_to_skeleton.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: V271-exact-mesh-to-skeleton
+          path: v271_results/

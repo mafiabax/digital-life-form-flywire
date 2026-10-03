@@ -158,3 +158,13 @@ V258 supplies a reproducible computational dendrite-candidate layer from the pub
 Research engineering project. Claims are strengthened only when source data, computation and independent reproduction support them.
 
 No open-source license is currently asserted for this repository.
+
+## V268 — Historical Point_data + PP3 frame audit
+
+V268 separates the exact historical Point_data provenance from the newer Zenodo release and independently reconstructs the PP3 subtree selection on the four exact V229 SWCs.
+
+The audit establishes the four exact historical root-ID rows and reproduces PP3-selected nodes 292, 358, 343, and 323. The resulting V229 root coordinates do not exactly match the historical Point_data roots, and no single translation or rigid transform reconciles the four pairs.
+
+V268 therefore records identity correspondence separately from coordinate-frame identity and historical morphology identity.
+
+See `docs/V268_POINT_DATA_PP3_FRAME_AUDIT.md`, `scripts/v268_historical_point_data_provenance.py`, and `.github/workflows/v268-point-data-pp3-frame-audit.yml`.

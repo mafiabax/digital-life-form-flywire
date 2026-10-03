@@ -1,0 +1,26 @@
+name: V275 sample-wide PP4 frame reconstruction
+
+on:
+  pull_request:
+    paths:
+      - "scripts/v275_samplewide_pp4_frame_reconstruction.py"
+      - ".github/workflows/v275-samplewide-pp4-frame-reconstruction.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned 2025 morphology stack
+        run: python -m pip install --upgrade pip "fafbseg==3.2.0" "navis==1.10.0" "skeletor==1.4.0" "scipy>=1.10" "jax>=0.4.0" "jaxlib>=0.4.0"
+      - name: Reconstruct sampled PP3 roots and test PP4 frame
+        run: python scripts/v275_samplewide_pp4_frame_reconstruction.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: V275-samplewide-pp4-frame-reconstruction
+          path: v275_results/

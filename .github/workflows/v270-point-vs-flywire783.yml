@@ -1,0 +1,30 @@
+name: V270 historical Point_data vs public FlyWire v783 skeleton frame
+
+on:
+  pull_request:
+    paths:
+      - "scripts/v270_point_vs_flywire783.py"
+      - ".github/workflows/v270-point-vs-flywire783.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip "pandas>=2.0" "numpy>=1.24" "navis>=1.10" "jax>=0.4.0" "jaxlib>=0.4.0"
+      - name: Compare historical roots against public v783 skeletons
+        env:
+          V270_MAX_N: "64"
+          V270_THREADS: "12"
+        run: python scripts/v270_point_vs_flywire783.py
+      - name: Upload audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: V270-point-vs-flywire783
+          path: v270_results/

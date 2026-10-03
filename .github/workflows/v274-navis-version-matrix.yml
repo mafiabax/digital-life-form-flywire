@@ -1,0 +1,27 @@
+name: V274 navis skeletonization version matrix
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/v274_navis_version_matrix.py"
+      - ".github/workflows/v274-navis-version-matrix.yml"
+permissions:
+  contents: read
+jobs:
+  matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        navis: ["1.8.0","1.9.0","1.10.0","1.11.0","1.12.0"]
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install morphology versions
+        run: python -m pip install --upgrade pip "fafbseg==3.2.2" "navis==${{ matrix.navis }}" "jax>=0.4.0" "jaxlib>=0.4.0" pandas
+      - name: Run exact 783 mesh skeletonization
+        run: python scripts/v274_navis_version_matrix.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: V274-navis-${{ matrix.navis }}
+          path: v274_results/
