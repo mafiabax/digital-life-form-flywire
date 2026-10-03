@@ -61,7 +61,7 @@ jobs:
           PY
 
       - name: Publish V261 artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: V261-Coordinate-Provenance-Audit
           path: /tmp/v261_results/

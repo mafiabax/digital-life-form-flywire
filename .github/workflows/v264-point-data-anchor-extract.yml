@@ -62,14 +62,14 @@ jobs:
         run: python scripts/v264_point_data_anchor_extract.py
 
       - name: Upload Point_data bytes and hash evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: V264-Point-data-raw-and-hash
           path: |
             /tmp/Point_data.pkl
             /tmp/point_data_hash_report.txt
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: V264-Point-data-anchor-rows
           path: v264_results/V264_Point_data_anchor_rows.json

@@ -15,7 +15,7 @@ jobs:
         run: curl --fail --location --retry 8 --retry-all-errors -o /tmp/connections.csv.gz 'https://storage.googleapis.com/flywire-data/codex/data/fafb/783/connections.csv.gz'
       - name: Reconstruct the V230 pair selection rule
         run: python scripts/v253_v230_pair_selection_provenance.py --source /tmp/connections.csv.gz --target v230_results/V230_target_synapses.csv --output /tmp/V253.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: V253-v230-pair-selection-provenance
           path: /tmp/V253.json

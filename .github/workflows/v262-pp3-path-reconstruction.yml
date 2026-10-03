@@ -116,7 +116,7 @@ jobs:
           PY
 
       - name: Upload V262 artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: V262-PP3-Path-Reconstruction
           path: /tmp/v262_results/

@@ -75,7 +75,7 @@ jobs:
                             "point_data_blob":p["source"]["study_blob_sha"],"per_root":p["per_root"]},indent=2))
           PY
       - name: Upload V259 evidence artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: V259-Published-Point-Provenance
           path: |

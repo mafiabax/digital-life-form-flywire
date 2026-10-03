@@ -40,7 +40,7 @@ jobs:
         run: cat /tmp/v256_results/V256_compartment_evidence.json
 
       - name: Publish V256 audit artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: V256-compartment-evidence-audit
           path: /tmp/v256_results/

@@ -24,7 +24,7 @@ jobs:
         run: python scripts/v254_build_circuit_evidence_pack.py --connections /tmp/connections.csv.gz --synapses /tmp/synapse_coordinates.csv.gz --reference-v230 v230_results/V230_target_synapses.csv --output /tmp/V254_Circuit_Evidence_Pack
       - name: Show manifest
         run: cat /tmp/V254_Circuit_Evidence_Pack/MANIFEST.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: V254-Circuit-Evidence-Pack
           path: /tmp/V254_Circuit_Evidence_Pack
