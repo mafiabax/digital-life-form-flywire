@@ -78,7 +78,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download V261 artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: V261-Coordinate-Provenance-Audit
           path: /tmp/v261_results
